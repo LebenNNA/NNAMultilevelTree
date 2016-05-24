@@ -72,7 +72,7 @@ static NSString *CellId = @"TreeViewCell";
 
 #pragma mark - UITableViewDataSource
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _dataArray.count;
 }
 
@@ -110,7 +110,7 @@ static NSString *CellId = @"TreeViewCell";
         expanded = NO;
         [parentNode setExpanded:NO];
         endPosition = [self removeAllNodesAtParent:parentNode];
-    } else {
+    } else if (parentNode.children.count>0) {
         expanded = YES;
         [parentNode setExpanded:YES];
         [self checkNodesWithParent:parentNode endPosition:endPosition];
