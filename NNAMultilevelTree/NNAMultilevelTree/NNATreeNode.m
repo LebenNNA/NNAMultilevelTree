@@ -18,45 +18,45 @@
 
 @implementation NNATreeNode
 
-- (instancetype)initWithName:(NSString *)name children:(NSArray *)children {
-    self = [super init];
-    if (self) {
-        self.children = [NSArray arrayWithArray:children];
-        self.name = name;
-        [children enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if ([obj isKindOfClass:[NNATreeNode class]]) {
-                NNATreeNode *node = (NNATreeNode *)obj;
-                node.parent = self;
-            }
-        }];
+
+- (NNATreeNode *)makeTreeNode:(NNATreeNode *)node children:(NSDictionary *)children depth:(NSUInteger)depth {
+    node.depth = depth;
+    node.expanded = NO;
+    node.nodeId = [NSString stringWithFormat:@"%@", [children objectForKey:@"Id"]];
+    node.nodeName = [NSString stringWithFormat:@"%@", [children objectForKey:@"Name"]];
+    if (children == nil || [children objectForKey:@"children"] == nil) {
+        return node;
     }
-    return self;
+    NSArray *childrenArray = [children objectForKey:@"children"];
+    if (children.count == 0) {
+        return node;
+    }
+    depth++;
+    node.children = @[].mutableCopy;
+
+    [childrenArray enumerateObjectsUsingBlock:^(NSDictionary *childrenDic, NSUInteger idx, BOOL *stop) {
+        NNATreeNode *tempNode = [[NNATreeNode alloc] init];
+        tempNode.parent = node;
+        [node addChild:[self makeTreeNode:tempNode children:childrenDic depth:depth]];
+    }];
+    return node;
 }
 
-+ (instancetype)dataObjectWithName:(NSString *)name children:(NSArray *)children {
-    return [[self alloc] initWithName:name children:children];
++ (NNATreeNode *)dataWithTreeNode:(NNATreeNode *)node children:(NSDictionary *)children depth:(NSUInteger)depth {
+    return [[self alloc] makeTreeNode:node children:children depth:depth];
 }
 
 - (NSInteger)depth {
-    _depth = 0;
-    [self getDepthWithNode:self];
     return _depth;
 }
 
-- (void)getDepthWithNode:(NNATreeNode *)node {
-    if (node.parent) {
-        _depth++;
-        [self getDepthWithNode:node.parent];
-    }
-}
-
-- (void)addChild:(id)child {
+- (void)addChild:(NNATreeNode *)child {
     NSMutableArray *children = [self.children mutableCopy];
-    [children insertObject:child atIndex:children.count-1];
+    [children addObject:child];
     self.children = [children copy];
 }
 
-- (void)removeChild:(id)child {
+- (void)removeChild:(NNATreeNode *)child {
     NSMutableArray *children = [self.children mutableCopy];
     [children removeObject:child];
     self.children = [children copy];

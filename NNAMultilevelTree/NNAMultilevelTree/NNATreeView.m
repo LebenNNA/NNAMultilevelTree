@@ -27,7 +27,7 @@
 
 - (void)insertRowsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
     if (indexPaths.count>0) {
-        [super insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
+        [super insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     } else {
         NSLog(@"没有添加的节点");
     }
@@ -35,7 +35,7 @@
 
 - (void)deleteRowsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
     if (indexPaths.count>0) {
-        [super deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
+        [super deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     } else {
         NSLog(@"没有可删除的节点");
     }

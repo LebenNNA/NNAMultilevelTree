@@ -14,7 +14,8 @@ static NSString *CellId = @"TreeViewCell";
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) NSMutableArray *dataArray;
+@property (nonatomic, strong) NSMutableArray *nodesArray;
+@property (nonatomic, strong) NSMutableArray *recursionArray;
 @property (nonatomic, strong) NNATreeView *treeView;
 @property (nonatomic, assign) NSInteger end;
 
@@ -24,6 +25,9 @@ static NSString *CellId = @"TreeViewCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _nodesArray = @[].mutableCopy;
+    _recursionArray = @[].mutableCopy;
+    
     [self loadData];
     [self buildTree];
 }
@@ -33,21 +37,15 @@ static NSString *CellId = @"TreeViewCell";
 }
 
 - (void)loadData {
-    NNATreeNode *node131 = [NNATreeNode dataObjectWithName:@"白🐭" children:nil];
-    NNATreeNode *node132 = [NNATreeNode dataObjectWithName:@"黑🐭" children:nil];
-    NNATreeNode *node133 = [NNATreeNode dataObjectWithName:@"灰🐭" children:nil];
-    
-    NNATreeNode *node121 = [NNATreeNode dataObjectWithName:@"波斯🐱" children:nil];
-    NNATreeNode *node122 = [NNATreeNode dataObjectWithName:@"加菲🐱" children:nil];
-    
-    NNATreeNode *node11 = [NNATreeNode dataObjectWithName:@"🐶" children:nil];
-    NNATreeNode *node12 = [NNATreeNode dataObjectWithName:@"🐱" children:@[node121, node122]];
-    NNATreeNode *node13 = [NNATreeNode dataObjectWithName:@"🐭" children:@[node131, node132, node133]];
-
-    NNATreeNode *node1 = [NNATreeNode dataObjectWithName:@"动物" children:@[node11, node12, node13]];
-    
-    _dataArray = @[node1].mutableCopy;
-    
+    NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"data" ofType:@"plist"];
+    NSDictionary *dataDic = [NSDictionary dictionaryWithContentsOfFile:dataPath];
+    NSArray *dataArray = [dataDic objectForKey:@"nodes"];
+    for (NSDictionary *nodeDic in dataArray) {
+        NNATreeNode *node = [[NNATreeNode alloc] init];
+        node = [NNATreeNode dataWithTreeNode:node children:nodeDic depth:0];
+        node.parent = nil;
+        [_nodesArray addObject:node];
+    }
 }
 
 - (void)buildTree {
@@ -58,22 +56,10 @@ static NSString *CellId = @"TreeViewCell";
     
 }
 
-- (void)checkNodesWithParent:(NNATreeNode *)parent endPosition:(NSInteger)endPosition {
-    _end = endPosition;
-    for (int i=0; i<parent.children.count; i++) {
-        NNATreeNode *node = [parent.children objectAtIndex:i];
-        [_dataArray insertObject:node atIndex:_end];
-        _end++;
-        if ((node.children.count>0)&&node.expanded) {
-            [self checkNodesWithParent:node endPosition:_end];
-        }
-    }
-}
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _dataArray.count;
+    return _nodesArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -83,15 +69,71 @@ static NSString *CellId = @"TreeViewCell";
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellId];
     }
     
-    NNATreeNode *node = [_dataArray objectAtIndex:indexPath.row];
+    NNATreeNode *node = [_nodesArray objectAtIndex:indexPath.row];
     NSMutableString *name = [NSMutableString string];
     for (int i=0; i<node.depth; i++) {
         [name appendString:@"     "];
     }
-    [name appendString:node.name];
+    [name appendString:node.nodeName];
     cell.textLabel.text = name;
     
     return cell;
+}
+
+- (void)updateTreeNode:(NNATreeNode *)node didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //先修改数据源
+    BOOL expanded = NO;
+    if (node.expanded) {
+        expanded = NO;
+        [node setExpanded:NO];
+    } else if (node.children.count>0) {
+        expanded = YES;
+        [node setExpanded:YES];
+    }
+    
+    [_recursionArray removeAllObjects];
+    [self recursiveTreeNode:node];
+    
+    __block NSInteger index = indexPath.row;
+    NSMutableArray *indexPathArray = [NSMutableArray arrayWithCapacity:0];
+    [_recursionArray enumerateObjectsUsingBlock:^(NNATreeNode *node, NSUInteger idx, BOOL *stop) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:++index inSection:0];
+        [indexPathArray addObject:indexPath];
+        if (expanded) {
+            [_nodesArray insertObject:node atIndex:index];
+        } else {
+            [_nodesArray removeObjectsInArray:_recursionArray];
+            
+        }
+    }];
+    //插入或者删除相关节点
+    if (expanded) {
+        [_treeView insertRowsAtIndexPaths:indexPathArray];
+    } else {
+        [_treeView deleteRowsAtIndexPaths:indexPathArray];
+    }
+
+}
+
+
+/**
+ *  递归遍历节点
+ *
+ *  @param node 父节点
+ */
+- (void)recursiveTreeNode:(NNATreeNode *)node {
+    if (node.children) {
+        [node.children enumerateObjectsUsingBlock:^(NNATreeNode *treeNode, NSUInteger idx, BOOL *stop) {
+            if (treeNode.expanded) {
+                treeNode.expanded = NO;
+                [_recursionArray addObject:treeNode];
+                [self recursiveTreeNode:treeNode];
+            }
+            else {
+                [_recursionArray addObject:treeNode];
+            }
+        }];
+    }
 }
 
 #pragma mark - UITableViewDelegate
@@ -101,61 +143,10 @@ static NSString *CellId = @"TreeViewCell";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //先修改数据源
-    NNATreeNode *parentNode = [_dataArray objectAtIndex:indexPath.row];
-    NSUInteger startPosition = indexPath.row+1;
-    NSUInteger endPosition = startPosition;
-    BOOL expanded = NO;
-    if (parentNode.expanded) {
-        expanded = NO;
-        [parentNode setExpanded:NO];
-        endPosition = [self removeAllNodesAtParent:parentNode];
-    } else if (parentNode.children.count>0) {
-        expanded = YES;
-        [parentNode setExpanded:YES];
-        [self checkNodesWithParent:parentNode endPosition:endPosition];
-        endPosition = _end;
-    }
+    NNATreeNode *parentNode = [_nodesArray objectAtIndex:indexPath.row];
+    [self updateTreeNode:parentNode didSelectRowAtIndexPath:indexPath];
     
-    //获得需要修正的indexPath
-    NSMutableArray *indexPathArray = [NSMutableArray array];
-    for (NSUInteger i=startPosition; i<endPosition; i++) {
-        NSIndexPath *tempIndexPath = [NSIndexPath indexPathForRow:i inSection:0];
-        [indexPathArray addObject:tempIndexPath];
-    }
-    
-    //插入或者删除相关节点
-    if (expanded) {
-        [_treeView insertRowsAtIndexPaths:indexPathArray];
-    } else {
-        [_treeView deleteRowsAtIndexPaths:indexPathArray];
-    }
 }
 
-/**
- *  删除该父节点下的所有子节点（包括孙子节点）
- *
- *  @param parentNode 父节点
- *
- *  @return 邻接父节点的位置距离该父节点的长度，也就是该父节点下面所有的子孙节点的数量
- */
-- (NSUInteger)removeAllNodesAtParent:(NNATreeNode *)parent {
-    NSUInteger startPosition = [_dataArray indexOfObject:parent];
-    NSUInteger endPosition = startPosition;
-    for (NSUInteger i=startPosition+1; i<_dataArray.count; i++) {
-        NNATreeNode *node = [_dataArray objectAtIndex:i];
-        endPosition++;
-        if (node.depth == parent.depth) {
-            break;
-        }
-        if (i==_dataArray.count-1) {
-            endPosition = _dataArray.count;
-        }
-    }
-    if (endPosition>startPosition) {
-        [_dataArray removeObjectsInRange:NSMakeRange(startPosition+1, endPosition-startPosition-1)];
-    }
-    return endPosition;
-}
 
 @end

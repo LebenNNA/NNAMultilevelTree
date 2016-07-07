@@ -18,6 +18,7 @@
 		844290F11CEB16CA00F2B8C3 /* NNAMultilevelTreeUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 844290F01CEB16CA00F2B8C3 /* NNAMultilevelTreeUITests.m */; };
 		844291001CEB171000F2B8C3 /* NNATreeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 844290FF1CEB171000F2B8C3 /* NNATreeView.m */; };
 		844291031CEB17DB00F2B8C3 /* NNATreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 844291021CEB17DB00F2B8C3 /* NNATreeNode.m */; };
+		84FA99B51D26834100F16471 /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84FA99B41D26834100F16471 /* data.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		844290FF1CEB171000F2B8C3 /* NNATreeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NNATreeView.m; sourceTree = "<group>"; };
 		844291011CEB17DB00F2B8C3 /* NNATreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NNATreeNode.h; sourceTree = "<group>"; };
 		844291021CEB17DB00F2B8C3 /* NNATreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NNATreeNode.m; sourceTree = "<group>"; };
+		84FA99B41D26834100F16471 /* data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = data.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 				844290FF1CEB171000F2B8C3 /* NNATreeView.m */,
 				844291011CEB17DB00F2B8C3 /* NNATreeNode.h */,
 				844291021CEB17DB00F2B8C3 /* NNATreeNode.m */,
+				84FA99B41D26834100F16471 /* data.plist */,
 				844290D11CEB16CA00F2B8C3 /* Main.storyboard */,
 				844290D71CEB16CA00F2B8C3 /* Assets.xcassets */,
 				844290D91CEB16CA00F2B8C3 /* LaunchScreen.storyboard */,
@@ -261,6 +264,7 @@
 			files = (
 				844290DB1CEB16CA00F2B8C3 /* LaunchScreen.storyboard in Resources */,
 				844290D81CEB16CA00F2B8C3 /* Assets.xcassets in Resources */,
+				84FA99B51D26834100F16471 /* data.plist in Resources */,
 				844290D31CEB16CA00F2B8C3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,6 +519,7 @@
 				844290F71CEB16CA00F2B8C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		844290F81CEB16CA00F2B8C3 /* Build configuration list for PBXNativeTarget "NNAMultilevelTreeTests" */ = {
 			isa = XCConfigurationList;
@@ -523,6 +528,7 @@
 				844290FA1CEB16CA00F2B8C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		844290FB1CEB16CA00F2B8C3 /* Build configuration list for PBXNativeTarget "NNAMultilevelTreeUITests" */ = {
 			isa = XCConfigurationList;
@@ -531,6 +537,7 @@
 				844290FD1CEB16CA00F2B8C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

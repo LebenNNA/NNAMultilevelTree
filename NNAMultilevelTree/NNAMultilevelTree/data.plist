@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>nodes</key>
+	<array>
+		<dict>
+			<key>Id</key>
+			<string>id-1</string>
+			<key>Name</key>
+			<string>第一单元</string>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>Id</key>
+					<string>id-1.1</string>
+					<key>Name</key>
+					<string>1. 一去二三里</string>
+					<key>children</key>
+					<array>
+						<dict>
+							<key>Id</key>
+							<string>id-1.1.1</string>
+							<key>Name</key>
+							<string>生字学习</string>
+							<key>children</key>
+							<array>
+								<dict>
+									<key>Id</key>
+									<string>id-1.1.1.2</string>
+									<key>Name</key>
+									<string>白🐭</string>
+								</dict>
+								<dict>
+									<key>Id</key>
+									<string>id-1.1.1.3</string>
+									<key>Name</key>
+									<string>黑🐭</string>
+								</dict>
+								<dict>
+									<key>Id</key>
+									<string>id-1.1.1.4</string>
+									<key>Name</key>
+									<string>灰🐭</string>
+								</dict>
+							</array>
+						</dict>
+						<dict>
+							<key>Id</key>
+							<string>id-1.1.2</string>
+							<key>Name</key>
+							<string>听写字词</string>
+						</dict>
+						<dict>
+							<key>Id</key>
+							<string>id-1.1.3</string>
+							<key>Name</key>
+							<string>古诗默写</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
