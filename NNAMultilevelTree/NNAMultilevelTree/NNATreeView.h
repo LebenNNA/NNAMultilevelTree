@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NNATreeNode.h"
 
 @interface NNATreeView : UITableView
 
-- (void)insertRowsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths;
-- (void)deleteRowsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths;
+@property (nonatomic, strong) NSArray *dataArray;
 
 @end
